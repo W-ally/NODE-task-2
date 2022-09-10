@@ -1,12 +1,11 @@
 // Models
 const { User } = require('./user.model');
-const { Post } = require('./task.model');
-const { Comment } = require('./comment.model');
+const { Task } = require('./task.model');
 
 const initModels = () => {
 	// 1 User <----> M Post
-	User.hasMany(Post, { foreignKey: 'userId' });
-	Post.belongsTo(User);
+	User.hasMany(Task, { foreignKey: 'userId' });
+	Task.belongsTo(User);
 
 	
 };

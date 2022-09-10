@@ -32,22 +32,19 @@ const getTasksStatus = async (req, res) => {
 	try {
 		 const{status}= req;
 
-		const posts = await Task.findAll({
+		const tasks = await Task.findAll({
 			where: { status },
-			/*attributes: ['id', 'title', 'content', 'createdAt'],
+			
 			include: [
-				{ model: User, attributes: ['id', 'name'] },
-				{
-					model: Comment,
-					attributes: ['id', 'comment', 'createdAt'],
-				},
-			],*/
+				{ model: User, attributes: ['id', 'name', 'status'] },
+				
+			],
 		});
 
 		res.status(200).json({
 			status: 'success',
 			data: {
-				posts,
+				tas,
 			},
 		});
 	} catch (error) {
