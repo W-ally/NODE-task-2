@@ -5,22 +5,17 @@ const { User } = require('../models/user.model');
 
 const getAllTasks = async (req, res) => {
 	try {
-		const posts = await Task.findAll({
+		const task = await Task.findAll({
 			where: { status: 'active' },
-			attributes: ['id', 'title', 'content', 'createdAt'],
 			include: [
-				{ model: User, attributes: ['id', 'name'] },
-				{
-					model: Comment,
-					attributes: ['id', 'comment', 'createdAt'],
-				},
+				{ model: User }	
 			],
 		});
 
 		res.status(200).json({
 			status: 'success',
 			data: {
-				posts,
+				task,
 			},
 		});
 	} catch (error) {
@@ -44,7 +39,7 @@ const getTasksStatus = async (req, res) => {
 		res.status(200).json({
 			status: 'success',
 			data: {
-				tas,
+				tasks,
 			},
 		});
 	} catch (error) {
@@ -76,7 +71,7 @@ const updateTask = async (req, res) => {
 		const dateLimit = new Date(task.limitDate).getTime();
 		const dateFinish = new Date(finishDate).getTime();
 	  
-		const residualTime = limitDate - finishDate;
+		const residualTime = dateLimit - dateFinish;
 	  
 		if (residualTime > 0) {
 		  await task.update({ finishDate, status: 'completed' });

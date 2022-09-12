@@ -17,38 +17,37 @@ const checkValidations = (req, res, next) => {
 
 	next();
 };
-
-const createUserValidators = [
-	body('name')
-		.isString()
-		.withMessage('Name must be a string')
-		.notEmpty()
-		.withMessage('Name cannot be empty')
-		.isLength({ min: 3 })
-		.withMessage('Name must be at least 3 characters'),
-	body('email').isEmail().withMessage('Must provide a valid email'),
+const createUserValidations = [
+	body('name').notEmpty().withMessage('Name cannot be empty'),
+	body('email')
+	  .notEmpty()
+	  .withMessage('Email cannot be empty')
+	  .isEmail()
+	  .withMessage('Must be a valid email'),
 	body('password')
-		.isString()
-		.withMessage('Password must be a string')
-		.notEmpty()
-		.withMessage('Password cannot be empty')
-		.isLength({ min: 8 })
-		.withMessage('Password must be at least 8 characters'),
+	  .notEmpty()
+	  .withMessage('Password cannot be empty')
+	  .isLength({ min: 8 })
+	  .withMessage('Password must be at least 8 characters long'),
 	checkValidations,
-];
-
-const createPostValidators = [
+  ];
+  
+  const createTaskValidations = [
 	body('title')
-		.isString()
-		.withMessage('Title must be a string')
-		.isLength({ min: 3 })
-		.withMessage('Title must be at least 3 characters'),
-	body('content')
-		.isString()
-		.withMessage('Content must be a string')
-		.isLength({ min: 3 })
-		.withMessage('Content must be at least 3 characters long'),
+	  .notEmpty()
+	  .withMessage('Title cannot be empty')
+	  .isString()
+	  .withMessage('Title must be a string'),
+	body('userId')
+	  .isNumeric()
+	  .withMessage('User id must be a number')
+	  .custom(val => val > 0)
+	  .withMessage('User id cannot be a negative value'),
 	checkValidations,
-];
-
-module.exports = { createUserValidators, createPostValidators };
+  ];
+  
+  module.exports = {
+	createUserValidations,
+	createTaskValidations,
+  };
+  

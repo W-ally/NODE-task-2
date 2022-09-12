@@ -1,95 +1,94 @@
 // Models
 const { User } = require('../models/user.model');
-const { Post } = require('../models/post.model');
-const { Comment } = require('../models/comment.model');
+
+
 
 const getAllUsers = async (req, res) => {
-	try {
-		const users = await User.findAll({
-			where: { status: 'active' },
-			include: [
-				{
-					model: Post,
-					include: {
-						model: Comment,
-						include: { model: User },
-					},
-				},
-				{
-					model: Comment,
-				},
-			],
-		});
-
-		res.status(200).json({
-			status: 'success',
-			data: {
-				users,
-			},
-		});
-	} catch (error) {
-		console.log(error);
-	}
+  try {
+	
+	const users = await User.findAll({
+		attributes: { exclude: ['password'] },
+	  });
+	
+	  res.status(200).json({
+		users,
+	  });
+  } catch (error) {
+	console.log(error);
+}
+		
 };
 
-const createUser = async (req, res) => {
+const createUser = async (req, res ) => {
+
 	try {
-		const { name, email, password } = req.body;
+	const { name, email, password } = req.body;
 
-		const newUser = await User.create({ name, email, password });
+    const newUser = await User.create({
+    name,
+    email,
+    password,
+    
+  });
+  // Remove password from response
+  newUser.password = undefined;
 
-		// 201 -> Success and a resource has been created
-		res.status(201).json({
-			status: 'success',
-			data: { newUser },
+  res.status(201).json({ newUser });
+		
+	} catch (error) {
+		console.log(error)
+	}
+  
+};
+
+const getUserById = async (req, res) => {
+
+	try {
+		const { user } = req;
+
+		res.status(200).json({
+		  user,
 		});
 	} catch (error) {
-		console.log(error);
+		console.log(error)
+		
 	}
+ 
 };
 
 const updateUser = async (req, res) => {
-	try {
-		const { name } = req.body;
-		const { user } = req;
+try {
+	const { user } = req;
+  const { name } = req.body;
 
-		// Method 1: Update by using the model
-		// await User.update({ name }, { where: { id } });
+  await user.update({ name });
 
-		// Method 2: Update using a model's instance
-		await user.update({ name });
-
-		res.status(200).json({
-			status: 'success',
-			data: { user },
-		});
-	} catch (error) {
-		console.log(error);
-	}
+  res.status(200).json({ status: 'success' });
+} catch (error) {
+	console.log(error)
+}
+  
 };
 
-const deleteUser = async (req, res) => {
-	try {
-		const { user } = req;
+const deleteUser = async (req, res, next) => {
+try {
+	const { user } = req;
 
-		// Method 1: Delete by using the model
-		// User.destroy({ where: { id } })
+  await user.update({ status: 'deleted' });
 
-		// Method 2: Delete by using the model's instance
-		// await user.destroy();
-
-		// Method 3: Soft delete
-		await user.update({ status: 'deleted' });
-
-		res.status(204).json({ status: 'success' });
-	} catch (error) {
-		console.log(error);
-	}
+  res.status(200).json({
+    status: 'success',
+  });
+} catch (error) {
+  console.log(error)
+}
+  
 };
 
 module.exports = {
-	getAllUsers,
-	createUser,
-	updateUser,
-	deleteUser,
+  getAllUsers,
+  createUser,
+  getUserById,
+  updateUser,
+  deleteUser,
 };
