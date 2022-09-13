@@ -4,7 +4,7 @@ const { Task } = require('./task.model');
 
 const initModels = () => {
 	// 1 User <----> task
-	User.hasMany(Task, { foreignKey: 'id' });
+	User.hasMany(Task, { foreignKey: 'userId' });
 	Task.belongsTo(User);
 
 	
